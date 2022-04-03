@@ -1,8 +1,22 @@
 import * as fs from 'fs'
 
+// Constants
 const OPENERS = [ '[', '{', '(', '<' ]
 const CLOSERS = [ ']', '}', ')', '>' ]
+const CORRUPT_POINT_VALUES = {
+    ')': 3,
+    ']': 57,
+    '}': 1197,
+    '>': 25137
+}
+const INCOMPLETE_POINT_VALUES = {
+    ']': 2,
+    ')': 1,
+    '}': 3,
+    '>': 4
+}
 
+// Helper functions
 const topOpener = (stack: string[]): string =>
     stack[stack.length - 1]
 
@@ -12,6 +26,12 @@ const isMatchingPair = (opener: string, closer: string): boolean =>
 const getCloser = (opener: string): string =>
     CLOSERS[OPENERS.indexOf(opener)]
 
+
+// Function that is used by Parts 1 and 2
+// Accepts a chunk and returns either:
+//      the corrupted character (string),
+//      the incomplete closing characters (string[]),
+//      or null if it's a complete line
 export function findCorruptedOrIncompleteChars(chunk: string): string[] | string | null {
     const openStack = []
 
@@ -38,13 +58,8 @@ export function parseChunks(fileName: string): string[] {
     return data.split('\n')
 }
 
-const CORRUPT_POINT_VALUES = {
-    ')': 3,
-    ']': 57,
-    '}': 1197,
-    '>': 25137
-}
 
+// Function to add up the scores of each corrupted line
 export function syntaxCorruptScorer(fileName: string): number {
     const chunks: string[] = parseChunks(fileName)
     let score: number = 0
@@ -59,13 +74,7 @@ export function syntaxCorruptScorer(fileName: string): number {
     return score
 }
 
-const INCOMPLETE_POINT_VALUES = {
-    ']': 2,
-    ')': 1,
-    '}': 3,
-    '>': 4
-}
-
+// Function to calculate the middle score of the incomplete lines
 export function syntaxIncompleteScorer(fileName: string): number {
     const chunks: string[] = parseChunks(fileName)
     let scores: number[] = []
